@@ -2,6 +2,11 @@
 const {
   Model
 } = require('sequelize');
+
+// taking bcrypt , mohit has added this ---------.
+const bcrypt = require('bcrypt');
+// taking salt , mohit  has added this ---------->
+const { SALT } = require('../config/serverConfig');
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -32,6 +37,12 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'User',
+  });
+
+    // hooks url: https://sequelize.org/docs/v6/other-topics/hooks/
+  User.beforeCreate(( user ) => {
+      const encryptedPassword = bcrypt.hashSync(user.password, SALT);// from this we will get the encrypted password
+      user.password = encryptedPassword;
   });
   return User;
 };
