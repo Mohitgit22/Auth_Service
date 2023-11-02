@@ -2,6 +2,7 @@ const { User } = require('../models/index');
 
 class UserRepository {
 
+
     // for creating a user
     async create(data) {
         try {
@@ -12,6 +13,9 @@ class UserRepository {
             throw error;
         }
     }
+
+
+
     async destroy(userId) {
         try {
             await User.destroy({
@@ -27,6 +31,8 @@ class UserRepository {
         }
     }
 
+
+
     async getbyId(userId) {
         try {
             const user = await User.findByPk(userId, {
@@ -37,7 +43,21 @@ class UserRepository {
             console.log(" Something went wrong on the repository layer ");
             throw error;
         }
+    }
 
+
+    async getByEmail ( userEmail ) {
+        try {
+            const user = await User.findOne({
+                where:{
+                    email: userEmail,
+                }
+            });
+            return user;
+        } catch (error) {
+            console.log( " Something went wrong on repository layer");
+            throw error;
+        }
     }
 
 }
