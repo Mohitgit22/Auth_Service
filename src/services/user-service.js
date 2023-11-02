@@ -23,7 +23,7 @@ class UserService {
 
     createToken(user) {
         try {
-            const result = jwt.sign(user, JWT_KEY, { expiresIn: 3 })// it expects a key => so we create it in .env file => it is any random string
+            const result = jwt.sign(user, JWT_KEY, { expiresIn: '1d' })// it expects a key => so we create it in .env file => it is any random string
             return result;
         } catch (error) {
             console.log("Something went wrong in the token creation ");
@@ -52,12 +52,12 @@ class UserService {
     }
 
 
-     async signIn(email, password){
+     async signIn(email, plainpassword){
         try {
             //step 1 --> fetch the user using the email
             const user = await this.userRepository.getByEmail(email);
             //step 2 --> comapare incoming plain password with stores encrypted password
-            const passwordsMatch = this.checkPassword( password, user.password);// user.password: encrpyted password
+            const passwordsMatch = this.checkPassword( plainpassword, user.password);// user.password: encrpyted password
 
             if(!passwordsMatch) {
                 console.log(" Password doesn't match");
@@ -69,6 +69,26 @@ class UserService {
 
         } catch (error) {
             console.log("Something went wrong in the sign in process ");
+            throw error;
+        }
+     }
+
+
+
+     async isAuthenticated(token) {
+        try {
+            const response= this.verifyToken(token);
+             if(!response){
+                throw { error: 'Invalid Token' };
+             }
+
+           const user = this.userRepository.getbyId(response.id);
+           if(!user) {
+            throw { error: 'No user with the corresponding token exists'};
+           }
+        return user.id;
+        } catch (error) {
+            console.log("Something went wrong in the auth process  in service layer ");
             throw error;
         }
      }
