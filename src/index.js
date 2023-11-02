@@ -6,6 +6,7 @@ const { PORT } = require('./config/serverConfig');
 
 const apiRoutes = require('./routes/index');
 
+
 // these 2 as we have encrypted details in these
 const { User } = require('./models/index');
 const bcrypt = require ('bcrypt');
