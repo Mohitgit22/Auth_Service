@@ -22,9 +22,13 @@ const prepareAndStartServer = () => {
         console.log(` Server Started at port : ${PORT} `);
         const incomingpassword = '123456';
 
-        const user = await User.findByPk(3);
-        const response = bcrypt.compareSync(incomingpassword, user.password);
-        console.log(response);
+
+
+
+        // for comparison of password( hash password and user entered )
+        // const user = await User.findByPk(2);
+        // const response = bcrypt.compareSync(incomingpassword, user.password);
+        // console.log(response);
     });
 }
 
