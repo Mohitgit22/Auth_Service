@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 
 // for bringing key
 const { JWT_KEY } = require('../config/serverConfig');
+const role = require('../models/role');
 
 class UserService {
     constructor() {
@@ -50,49 +51,58 @@ class UserService {
             throw error;
         }
     }
+    
 
-
-     async signIn(email, plainpassword){
+    async signIn(email, plainpassword) {
         try {
             //step 1 --> fetch the user using the email
             const user = await this.userRepository.getByEmail(email);
             //step 2 --> comapare incoming plain password with stores encrypted password
-            const passwordsMatch = this.checkPassword( plainpassword, user.password);// user.password: encrpyted password
+            const passwordsMatch = this.checkPassword(plainpassword, user.password);// user.password: encrpyted password
 
-            if(!passwordsMatch) {
+            if (!passwordsMatch) {
                 console.log(" Password doesn't match");
-                throw { error: 'Incorrect password'};
+                throw { error: 'Incorrect password' };
             }
-             // step 3  --->if the passwords mathced,  then we will generate token and send it to user
-             const newJWT = this.createToken({email: user.email , id: user.id});
-             return newJWT;
+            // step 3  --->if the passwords mathced,  then we will generate token and send it to user
+            const newJWT = this.createToken({ email: user.email, id: user.id });
+            return newJWT;
 
         } catch (error) {
             console.log("Something went wrong in the sign in process ");
             throw error;
         }
-     }
+    }
 
 
 
-     async isAuthenticated(token) {
+    async isAuthenticated(token) {
         try {
-            const response= this.verifyToken(token);
-             if(!response){
+            const response = this.verifyToken(token);
+            if (!response) {
                 throw { error: 'Invalid Token' };
-             }
+            }
 
-           const user = this.userRepository.getbyId(response.id);
-           if(!user) {
-            throw { error: 'No user with the corresponding token exists'};
-           }
-        return user.id;
+            const user = this.userRepository.getbyId(response.id);
+            if (!user) {
+                throw { error: 'No user with the corresponding token exists' };
+            }
+            return user.id;
         } catch (error) {
             console.log("Something went wrong in the auth process  in service layer ");
             throw error;
         }
-     }
+    }
 
+
+      isAdmin(userId) {
+        try {
+            return this.userRepository.isAdmin(userId);
+        } catch (error) {
+            console.log("Something went wrong isAdmin  in service layer ");
+            throw error;
+        }
+      }
 }
 
 module.exports = UserService;
