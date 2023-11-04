@@ -1,5 +1,5 @@
 const UserService = require('../services/user-service');
-
+const { response } = require('express');
 
 const userService = new UserService();
 
@@ -16,13 +16,13 @@ const create = async (req, res) => {
             err: {}
         });
     } catch (error) {
-        console.log(error);
-        return res.status(500).json({
+       // console.log(error);
+        return res.status(error.statusCode).json({
             data: {},
             success: false,
-            message: 'Something went wrong in the repo layer',
-            err: error
-        })
+            message: error.message,
+            err: error.explanation
+        });
     }
 }
 
@@ -81,7 +81,7 @@ const isAdmin = async (req, res) => {
             message: 'Successfully fetched wheher user is admin or not ',
         });
     } catch (error) {
-        console.log(error);
+       // console.log(error);
         return res.status(500).json({
             data: {},
             success: false,
