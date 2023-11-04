@@ -6,9 +6,9 @@ const { PORT } = require('./config/serverConfig');
 
 const apiRoutes = require('./routes/index');
 
-
+const db = require('./models/index');
 // these 2 as we have encrypted details in these
-const { User } = require('./models/index');
+const { User,Role } = require('./models/index');
 const bcrypt = require ('bcrypt');
 
 const UserService = require('./services/user-service');
@@ -40,6 +40,24 @@ const prepareAndStartServer = () => {
         // const user = await User.findByPk(2);
         // const response = bcrypt.compareSync(incomingpassword, user.password);
         // console.log(response);
+
+
+        // if(process.env.DB_SYNC){
+        //     db.sequelize.sync({ alter: true});
+        // }
+
+
+        // lect 10 : authorisation ----->
+        // const u1 = await User.findByPk(1);
+        // const r1 = await Role.findByPk(1);
+        // u1.addRole(r1);// 'add' is a pre defined function in sequelize
+        // const response1 = await r1.getUsers();
+        // const response2 = await u1.getRoles();
+        // const response = await u1.hasRole(r1);
+        
+        // console.log(response1);
+        // console.log(response2);
+
     });
 }
 
